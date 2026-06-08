@@ -16,6 +16,18 @@ import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/genainormalizerprocessor/internal/otelsemconv"
 )
 
+// Attribute keys defined in the canonical Python semconv_ai package but not
+// exported by go-openllmetry/semconv-ai. Declared here so the lookup table and
+// any test fixtures share one definition per key.
+const (
+	KeyRequestTemperature   = "llm.request.temperature"
+	KeyRequestTopP          = "llm.request.top_p"
+	KeyResponseFinishReason = "llm.response.finish_reason"
+	KeyResponseStopReason   = "llm.response.stop_reason"
+	KeyEntityInput          = "traceloop.entity.input"
+	KeyEntityOutput         = "traceloop.entity.output"
+)
+
 // LookupTable maps OpenLLMetry attribute keys to the OTel GenAI target keys.
 var LookupTable = map[string]string{
 	// Token usage
@@ -28,10 +40,8 @@ var LookupTable = map[string]string{
 
 	// Request params
 	string(semconvai.LLMRequestMaxTokens): otelsemconv.GenAIRequestMaxTokens,
-	// Not in go-openllmetry/semconv-ai; defined in the canonical Python
-	// semconv_ai package.
-	"llm.request.temperature":             otelsemconv.GenAIRequestTemperature,
-	"llm.request.top_p":                   otelsemconv.GenAIRequestTopP,
+	KeyRequestTemperature:                 otelsemconv.GenAIRequestTemperature,
+	KeyRequestTopP:                        otelsemconv.GenAIRequestTopP,
 	string(semconvai.LLMTopK):             otelsemconv.GenAIRequestTopK,
 	string(semconvai.LLMFrequencyPenalty): otelsemconv.GenAIRequestFrequencyPenalty,
 	string(semconvai.LLMPresencePenalty):  otelsemconv.GenAIRequestPresencePenalty,
@@ -40,10 +50,8 @@ var LookupTable = map[string]string{
 
 	// Finish reason: source is a single string. Wrapping into a string[] at
 	// gen_ai.response.finish_reasons is handled by otelsemconv.Coerce.
-	// Not in go-openllmetry/semconv-ai; defined in the Python
-	// semconv_ai package.
-	"llm.response.finish_reason": otelsemconv.GenAIResponseFinishReasons,
-	"llm.response.stop_reason":   otelsemconv.GenAIResponseFinishReasons,
+	KeyResponseFinishReason: otelsemconv.GenAIResponseFinishReasons,
+	KeyResponseStopReason:   otelsemconv.GenAIResponseFinishReasons,
 
 	// Operation: llm.request.type on LLM spans, traceloop.span.kind on
 	// workflow spans. Enum folding handled by Transform.
@@ -52,8 +60,6 @@ var LookupTable = map[string]string{
 
 	// Traceloop workflow/entity (agentic)
 	string(semconvai.TraceloopEntityName): otelsemconv.GenAIAgentName,
-	// Not in go-openllmetry/semconv-ai; defined in the Python
-	// semconv_ai package.
-	"traceloop.entity.input":  otelsemconv.GenAIInputMessages,
-	"traceloop.entity.output": otelsemconv.GenAIOutputMessages,
+	KeyEntityInput:                        otelsemconv.GenAIInputMessages,
+	KeyEntityOutput:                       otelsemconv.GenAIOutputMessages,
 }

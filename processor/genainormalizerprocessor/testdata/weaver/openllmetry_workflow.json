@@ -1,0 +1,18 @@
+[
+  {
+    "span": {
+      "name": "",
+      "kind": "client",
+      "attributes": [
+        {
+          "name": "gen_ai.request.model",
+          "value": "claude-sonnet-4"
+        },
+        {
+          "name": "gen_ai.operation.name",
+          "value": "invoke_workflow"
+        }
+      ]
+    }
+  }
+]

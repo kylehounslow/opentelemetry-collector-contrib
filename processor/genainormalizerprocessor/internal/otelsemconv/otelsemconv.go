@@ -7,6 +7,9 @@
 //
 // Bumping versions: update the conventions import path below, verify any
 // referenced symbols still exist, and bump version references in public docs.
+// The Weaver live-check (weaver_integration_test.go) derives the registry tag
+// from SchemaURL, so no version is hard-coded there; after a bump, regenerate
+// the fixtures with `go test -run TestWeaverFixtures -update-weaver-fixtures`.
 //
 // Adding a new attribute: prefer typed(conventions.GenAIFooBar) — the typed
 // constructor's argument type drives Coerce, which is what enforces spec

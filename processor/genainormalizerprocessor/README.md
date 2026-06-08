@@ -72,6 +72,20 @@ For target keys with a typed primitive constructor in semconv (`gen_ai.usage.inp
 
 For target keys defined as `any` in the spec (`gen_ai.input.messages`, `gen_ai.output.messages`, `gen_ai.tool.definitions`, `gen_ai.operation.name` enum, etc.), the processor preserves whatever shape the source emitted. Backends that require a uniform type for these targets should pair this processor with the [`transformprocessor`](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/transformprocessor) for OTTL-based shape normalization.
 
+### Semantic conventions conformance
+
+The targeted semconv version is pinned in `internal/otelsemconv/otelsemconv.go` (the `go.opentelemetry.io/otel/semconv` import) and surfaced as `SchemaURL`.
+
+`TestWeaverLiveCheck` (in `weaver_integration_test.go`, behind the `integration` build tag) runs [Weaver](https://github.com/open-telemetry/weaver) `registry live-check` against the registry for that version and asserts the emitted `gen_ai.*` attributes produce no semconv violations and no undefined enum variants. The registry tag is derived from `SchemaURL`, so it tracks the pin automatically. The check inputs are the committed fixtures under `testdata/weaver/`, which `TestWeaverFixtures` keeps in sync with real processor output.
+
+Run it with `make mod-integration-test` (requires Docker) from the component directory.
+
+To bump the semconv version:
+
+1. Update the `semconv` import in `internal/otelsemconv/otelsemconv.go` and the `https://opentelemetry.io/schemas/<version>` references in this README.
+2. Regenerate the fixtures: `go test -run TestWeaverFixtures -update-weaver-fixtures`.
+3. Re-run `make mod-integration-test` and resolve any new violations.
+
 ## Examples
 
 Default configuration:
